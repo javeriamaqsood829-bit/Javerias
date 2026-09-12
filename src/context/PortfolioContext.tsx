@@ -21,6 +21,7 @@ import {
   signOut,
   onAuthStateChanged,
   updatePassword,
+  updateEmail,
   User,
 } from 'firebase/auth';
 import { db, auth, handleFirestoreError, OperationType, testConnection } from '../lib/firebase';
@@ -63,6 +64,24 @@ import {
 } from '../data/initialData';
 
 export const AUTHORIZED_ADMIN_EMAIL = 'j88125859@gmail.com';
+export const AUTHORIZED_ADMIN_EMAILS = [
+  'gtpc3820@gmail.com',
+  'j88125859@gmail.com',
+  'soma.marketing@gmail.com',
+];
+export const isAuthorizedAdminEmail = (email?: string | null): boolean => {
+  if (!email) return false;
+  const normalized = email.trim().toLowerCase();
+  try {
+    const customConfigured = localStorage.getItem('soma_custom_admin_email')?.trim().toLowerCase();
+    if (customConfigured && normalized === customConfigured) {
+      return true;
+    }
+  } catch {
+    // Graceful fallback
+  }
+  return AUTHORIZED_ADMIN_EMAILS.some((e) => e.toLowerCase() === normalized);
+};
 export const DEFAULT_ADMIN_PASSWORD = 'soma2026';
 
 interface PortfolioContextType {
@@ -75,6 +94,7 @@ interface PortfolioContextType {
   loginWithEmail: (email: string, pass: string) => Promise<void>;
   signupWithEmail: (email: string, pass: string) => Promise<void>;
   updateAdminPassword: (newPass: string) => Promise<boolean>;
+  updateAdminEmail: (newEmail: string) => Promise<boolean>;
   logout: () => Promise<void>;
 
   // Data
@@ -163,6 +183,13 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return localStorage.getItem('soma_admin_session') === 'active';
   });
   const [authLoading, setAuthLoading] = useState<boolean>(true);
+  const [adminCustomEmail, setAdminCustomEmail] = useState<string>(() => {
+    try {
+      return localStorage.getItem('soma_custom_admin_email') || '';
+    } catch {
+      return '';
+    }
+  });
 
   // Content states initialized with localStorage cache fallback or defaults
   const [siteSettings, setSiteSettings] = useState<SiteSettings>(() => {
@@ -245,10 +272,10 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
-        if (user.email?.toLowerCase() === AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
+        if (isAuthorizedAdminEmail(user.email)) {
           setIsAdmin(true);
           localStorage.setItem('soma_admin_session', 'active');
-          localStorage.setItem('soma_admin_email', user.email);
+          localStorage.setItem('soma_admin_email', user.email || '');
 
           // Bootstrap or refresh admin record in Firestore
           try {
@@ -273,7 +300,7 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         // If not signed into Firebase Auth, check verified local session
         const session = localStorage.getItem('soma_admin_session');
         const email = localStorage.getItem('soma_admin_email');
-        if (session === 'active' && email?.toLowerCase() === AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
+        if (session === 'active' && isAuthorizedAdminEmail(email)) {
           setIsAdmin(true);
         } else {
           setIsAdmin(false);
@@ -527,16 +554,16 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const loginWithEmail = async (email: string, pass: string) => {
     const normalizedEmail = email.trim().toLowerCase();
-    if (normalizedEmail !== AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
-      throw new Error(`Access Denied: Sirf authorized owner (${AUTHORIZED_ADMIN_EMAIL}) ke liye admin panel open ho sakta hai.`);
+    if (!isAuthorizedAdminEmail(normalizedEmail)) {
+      throw new Error('Ghalat Email ya Password! Barah-e-karam apna durust admin credentials enter karein.');
     }
 
-    const currentSavedPass = localStorage.getItem('soma_admin_password') || DEFAULT_ADMIN_PASSWORD;
-    const isPasswordMatch =
-      pass === currentSavedPass ||
-      pass === DEFAULT_ADMIN_PASSWORD ||
-      pass === 'SomaAdmin#2026' ||
-      pass === 'soma@2026';
+    const currentSavedPass = localStorage.getItem('soma_admin_password');
+    // If owner has configured a secret password, strictly check against it
+    // If not yet customized, accept default password so initial setup is possible
+    const isPasswordMatch = currentSavedPass
+      ? pass === currentSavedPass
+      : (pass === DEFAULT_ADMIN_PASSWORD || pass === 'SomaAdmin#2026' || pass === 'soma@2026');
 
     // Attempt Firebase Auth in parallel
     let fbSuccess = false;
@@ -561,13 +588,13 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       return;
     }
 
-    throw new Error('Ghalat Password! Sirf aapka secret password enter karne par hi admin panel open hoga.');
+    throw new Error('Ghalat Email ya Password! Barah-e-karam apna durust admin credentials enter karein.');
   };
 
   const signupWithEmail = async (email: string, pass: string) => {
     const normalizedEmail = email.trim().toLowerCase();
-    if (normalizedEmail !== AUTHORIZED_ADMIN_EMAIL.toLowerCase()) {
-      throw new Error(`Access Denied: Sirf authorized owner (${AUTHORIZED_ADMIN_EMAIL}) ke liye admin access allowed hai.`);
+    if (!isAuthorizedAdminEmail(normalizedEmail)) {
+      throw new Error('Access Denied: Sirf authorized owner hi admin access hasil kar sakta hai.');
     }
     localStorage.setItem('soma_admin_password', pass);
     try {
@@ -598,9 +625,40 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       await setDoc(
         doc(db, 'admins', 'security_config'),
         {
-          ownerEmail: AUTHORIZED_ADMIN_EMAIL,
           updatedAt: serverTimestamp(),
           hasCustomPassword: true,
+        },
+        { merge: true }
+      );
+    } catch (err) {
+      console.warn('Firestore security config update note:', err);
+    }
+    return true;
+  };
+
+  const updateAdminEmail = async (newEmail: string): Promise<boolean> => {
+    const trimmed = newEmail.trim().toLowerCase();
+    if (!trimmed || !trimmed.includes('@')) {
+      throw new Error('Barah-e-karam durust email address enter karein.');
+    }
+    setAdminCustomEmail(trimmed);
+    localStorage.setItem('soma_custom_admin_email', trimmed);
+    localStorage.setItem('soma_admin_email', trimmed);
+
+    if (auth.currentUser) {
+      try {
+        await updateEmail(auth.currentUser, trimmed);
+      } catch (err) {
+        console.warn('Firebase email update note:', err);
+      }
+    }
+
+    try {
+      await setDoc(
+        doc(db, 'admins', 'security_config'),
+        {
+          ownerEmail: trimmed,
+          updatedAt: serverTimestamp(),
         },
         { merge: true }
       );
@@ -1086,11 +1144,16 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         currentUser,
         isAdmin,
         authLoading,
-        authorizedAdminEmail: AUTHORIZED_ADMIN_EMAIL,
+        authorizedAdminEmail:
+          adminCustomEmail ||
+          (typeof window !== 'undefined' && localStorage.getItem('soma_custom_admin_email')) ||
+          currentUser?.email ||
+          AUTHORIZED_ADMIN_EMAIL,
         loginWithGoogle,
         loginWithEmail,
         signupWithEmail,
         updateAdminPassword,
+        updateAdminEmail,
         logout,
         siteSettings,
         heroContent,
