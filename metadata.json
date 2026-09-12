@@ -1,0 +1,8 @@
+{
+  "name": "Soma | Digital Marketer Portfolio & CMS",
+  "description": "Personal portfolio website and exclusive admin CMS for Soma, a professional digital marketing and growth strategist.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

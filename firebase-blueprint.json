@@ -1,0 +1,156 @@
+{
+  "entities": {
+    "SiteSettings": {
+      "title": "Site Settings",
+      "description": "Global portfolio configuration and owner branding",
+      "type": "object",
+      "properties": {
+        "brandName": { "type": "string", "maxLength": 100 },
+        "ownerName": { "type": "string", "maxLength": 100 },
+        "professionalTitle": { "type": "string", "maxLength": 150 },
+        "email": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "location": { "type": "string", "maxLength": 150 },
+        "shortBio": { "type": "string", "maxLength": 500 },
+        "cvUrl": { "type": "string", "maxLength": 500 },
+        "profileImage": { "type": "string", "maxLength": 500 },
+        "primaryAccent": { "type": "string", "maxLength": 30 },
+        "secondaryAccent": { "type": "string", "maxLength": 30 },
+        "updatedAt": { "type": "string" }
+      }
+    },
+    "Project": {
+      "title": "Portfolio Project",
+      "description": "Digital marketing case study and project showcase",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 200 },
+        "slug": { "type": "string", "maxLength": 200 },
+        "category": { "type": "string", "maxLength": 100 },
+        "client": { "type": "string", "maxLength": 150 },
+        "date": { "type": "string", "maxLength": 50 },
+        "shortDescription": { "type": "string", "maxLength": 500 },
+        "fullDescription": { "type": "string", "maxLength": 3000 },
+        "challenge": { "type": "string", "maxLength": 3000 },
+        "strategy": { "type": "string", "maxLength": 3000 },
+        "execution": { "type": "string", "maxLength": 3000 },
+        "results": { "type": "string", "maxLength": 3000 },
+        "coverImage": { "type": "string", "maxLength": 500 },
+        "projectUrl": { "type": "string", "maxLength": 500 },
+        "featured": { "type": "boolean" },
+        "published": { "type": "boolean" },
+        "displayOrder": { "type": "number" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["title", "slug", "published"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Digital marketing service offering",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "maxLength": 150 },
+        "shortDescription": { "type": "string", "maxLength": 400 },
+        "longDescription": { "type": "string", "maxLength": 2000 },
+        "icon": { "type": "string", "maxLength": 50 },
+        "published": { "type": "boolean" },
+        "displayOrder": { "type": "number" }
+      },
+      "required": ["title", "shortDescription", "published"]
+    },
+    "Skill": {
+      "title": "Skill",
+      "description": "Professional marketing or analytical skill",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "category": { "type": "string", "maxLength": 50 },
+        "percentage": { "type": "number" },
+        "icon": { "type": "string", "maxLength": 50 },
+        "published": { "type": "boolean" },
+        "displayOrder": { "type": "number" }
+      },
+      "required": ["name", "category", "percentage"]
+    },
+    "Experience": {
+      "title": "Experience",
+      "description": "Professional digital marketing work history",
+      "type": "object",
+      "properties": {
+        "company": { "type": "string", "maxLength": 150 },
+        "position": { "type": "string", "maxLength": 150 },
+        "employmentType": { "type": "string", "maxLength": 50 },
+        "startDate": { "type": "string", "maxLength": 50 },
+        "endDate": { "type": "string", "maxLength": 50 },
+        "location": { "type": "string", "maxLength": 100 },
+        "description": { "type": "string", "maxLength": 2000 },
+        "published": { "type": "boolean" },
+        "displayOrder": { "type": "number" }
+      },
+      "required": ["company", "position", "startDate"]
+    },
+    "Message": {
+      "title": "Contact Message",
+      "description": "Client inquiries submitted through the contact form",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "company": { "type": "string", "maxLength": 150 },
+        "service": { "type": "string", "maxLength": 100 },
+        "budget": { "type": "string", "maxLength": 50 },
+        "message": { "type": "string", "maxLength": 3000 },
+        "status": { "type": "string", "enum": ["unread", "read", "replied", "archived"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["name", "email", "message"]
+    },
+    "Testimonial": {
+      "title": "Testimonial",
+      "description": "Client reviews and recommendations",
+      "type": "object",
+      "properties": {
+        "clientName": { "type": "string", "maxLength": 100 },
+        "clientPosition": { "type": "string", "maxLength": 150 },
+        "company": { "type": "string", "maxLength": 150 },
+        "rating": { "type": "number" },
+        "testimonial": { "type": "string", "maxLength": 2000 },
+        "published": { "type": "boolean" },
+        "displayOrder": { "type": "number" }
+      },
+      "required": ["clientName", "testimonial", "rating"]
+    }
+  },
+  "firestore": {
+    "/siteSettings/{settingId}": {
+      "schema": "SiteSettings",
+      "description": "Global website configuration and owner information"
+    },
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "Marketing case studies and portfolio projects"
+    },
+    "/services/{serviceId}": {
+      "schema": "Service",
+      "description": "Digital marketing services"
+    },
+    "/skills/{skillId}": {
+      "schema": "Skill",
+      "description": "Marketing capabilities and proficiencies"
+    },
+    "/experience/{experienceId}": {
+      "schema": "Experience",
+      "description": "Employment and career timeline"
+    },
+    "/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Submitted contact inquiries, strictly private to admin"
+    },
+    "/testimonials/{testimonialId}": {
+      "schema": "Testimonial",
+      "description": "Client reviews and feedback"
+    }
+  }
+}

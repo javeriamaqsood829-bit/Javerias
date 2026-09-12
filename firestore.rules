@@ -1,0 +1,115 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Health check / connection test
+    match /test/connection {
+      allow read: if true;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "j88125859@gmail.com" ||
+        request.auth.token.email == "soma.marketing@gmail.com" ||
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isValidString(val, minLen, maxLen) {
+      return val is string && val.size() >= minLen && val.size() <= maxLen;
+    }
+
+    function isValidMessage(data) {
+      return data.keys().hasAll(['name', 'email', 'message']) &&
+             isValidString(data.name, 1, 100) &&
+             isValidString(data.email, 3, 150) &&
+             isValidString(data.message, 1, 3000);
+    }
+
+    // Admin collection: allow signed-in user to write their own admin record
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn() && (request.auth.uid == adminId || isAdmin());
+    }
+
+    // Public contact messages: anyone can submit an inquiry, ONLY admin can read/manage
+    match /messages/{messageId} {
+      allow create: if isValidMessage(request.resource.data);
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Portfolio content collections: public read, seamless CMS updates
+    match /siteSettings/{settingId} {
+      allow read, write: if true;
+    }
+
+    match /hero/{heroId} {
+      allow read, write: if true;
+    }
+
+    match /about/{aboutId} {
+      allow read, write: if true;
+    }
+
+    match /projects/{projectId} {
+      allow read, write: if true;
+    }
+
+    match /services/{serviceId} {
+      allow read, write: if true;
+    }
+
+    match /process/{processId} {
+      allow read, write: if true;
+    }
+
+    match /skills/{skillId} {
+      allow read, write: if true;
+    }
+
+    match /experience/{experienceId} {
+      allow read, write: if true;
+    }
+
+    match /education/{educationId} {
+      allow read, write: if true;
+    }
+
+    match /certifications/{certId} {
+      allow read, write: if true;
+    }
+
+    match /results/{resultId} {
+      allow read, write: if true;
+    }
+
+    match /testimonials/{testimonialId} {
+      allow read, write: if true;
+    }
+
+    match /socialLinks/{socialId} {
+      allow read, write: if true;
+    }
+
+    match /pageSections/{sectionId} {
+      allow read, write: if true;
+    }
+
+    match /seo/{seoId} {
+      allow read, write: if true;
+    }
+
+    match /media/{mediaId} {
+      allow read, write: if true;
+    }
+  }
+}
