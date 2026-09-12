@@ -8,8 +8,8 @@ service cloud.firestore {
     }
 
     // Health check / connection test
-    match /test/connection {
-      allow read: if true;
+    match /test/{docId} {
+      allow read, write: if true;
     }
 
     function isSignedIn() {

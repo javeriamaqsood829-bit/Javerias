@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, doc, getDocFromServer } from 'firebase/firestore';
+import { initializeFirestore, getFirestore, doc, getDocFromServer } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import firebaseConfig from '../../firebase-applet-config.json';
 
@@ -15,6 +15,16 @@ const effectiveConfig = {
 };
 
 const app = initializeApp(effectiveConfig);
+
+// Initialize Firestore with auto-detected long-polling to prevent connection drops in iframes & sandboxes
+initializeFirestore(
+  app,
+  {
+    experimentalAutoDetectLongPolling: true,
+  },
+  effectiveConfig.firestoreDatabaseId
+);
+
 export const db = getFirestore(app, effectiveConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
@@ -71,17 +81,25 @@ export function handleFirestoreError(
   throw new Error(JSON.stringify(errInfo));
 }
 
-// Mandatory connection test on boot
-export async function testConnection(): Promise<boolean> {
-  try {
-    await getDocFromServer(doc(db, 'test', 'connection'));
-    console.log('Connected to Firestore successfully');
-    return true;
-  } catch (error) {
-    if (error instanceof Error && error.message.includes('the client is offline')) {
-      console.error('Please check your Firebase configuration.');
+// Mandatory connection test on boot with gentle retry
+export async function testConnection(retries = 2): Promise<boolean> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      await getDocFromServer(doc(db, 'test', 'connection'));
+      console.log('Connected to Cloud Firestore backend successfully');
+      return true;
+    } catch (error) {
+      if (attempt < retries) {
+        await new Promise((resolve) => setTimeout(resolve, 800));
+        continue;
+      }
+      if (error instanceof Error && (error.message.includes('the client is offline') || error.message.includes('unavailable'))) {
+        console.warn('Firestore offline/cache mode active: app will serve cached data until backend is reached.');
+      } else {
+        console.warn('Firestore connection notice:', error instanceof Error ? error.message : error);
+      }
+      return false;
     }
-    // We don't crash the entire app if offline, but log appropriately
-    return false;
   }
+  return false;
 }

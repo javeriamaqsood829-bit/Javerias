@@ -51,7 +51,18 @@ GitHub Actions will automatically run the **Deploy to Hostinger via FTP** workfl
 
 ---
 
-### Method 2: Manual Upload to Hostinger (Alternative)
+### Method 3: Hostinger Git / Deployments (Direct from hPanel)
+
+If you connected your GitHub repo directly inside Hostinger hPanel (**Websites -> Deployments**):
+
+1. **Build and Output Settings in Hostinger**:
+   - **Framework**: Select **Vite** or **React** (Do NOT choose Express, this is a Vite client application).
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+   - **Node version**: `20.x` or `22.x`
+
+2. Click **Redeploy** or **Fix and redeploy** in Hostinger!
+   The chunk splitting optimization in `vite.config.ts` will ensure the build completes with zero warnings.
 
 If you prefer uploading files directly:
 1. Run in your terminal:
