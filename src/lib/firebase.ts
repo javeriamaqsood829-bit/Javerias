@@ -16,16 +16,14 @@ const effectiveConfig = {
 
 const app = initializeApp(effectiveConfig);
 
-// Initialize Firestore with auto-detected long-polling to prevent connection drops in iframes & sandboxes
-initializeFirestore(
+// Initialize Firestore with forced long-polling to prevent WebSocket connection drops and failures in sandboxes & iframes
+export const db = initializeFirestore(
   app,
   {
-    experimentalAutoDetectLongPolling: true,
+    experimentalForceLongPolling: true,
   },
   effectiveConfig.firestoreDatabaseId
 );
-
-export const db = getFirestore(app, effectiveConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
 export const storage = getStorage(app);
 
