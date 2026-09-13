@@ -7,6 +7,7 @@ export const AdminSkills: React.FC = () => {
   const { skills, saveSkill, deleteSkill } = usePortfolio();
   const [editingSkill, setEditingSkill] = useState<SkillItem | null>(null);
   const [isNew, setIsNew] = useState(false);
+  const [deletingSkillId, setDeletingSkillId] = useState<string | null>(null);
 
   const startNewSkill = () => {
     const newS: SkillItem = {
@@ -181,25 +182,50 @@ export const AdminSkills: React.FC = () => {
               </div>
 
               <div className="flex items-center gap-1.5 shrink-0">
-                <button
-                  onClick={() => {
-                    setEditingSkill(skill);
-                    setIsNew(false);
-                  }}
-                  className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300"
-                >
-                  <Edit2 className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => {
-                    if (confirm(`Delete skill "${skill.name}"?`)) {
-                      deleteSkill(skill.id);
-                    }
-                  }}
-                  className="p-1.5 rounded-lg bg-zinc-900 hover:bg-red-950/40 text-zinc-400 hover:text-red-400"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                </button>
+                {deletingSkillId === skill.id ? (
+                  <div className="flex items-center gap-1 bg-red-950/70 border border-red-800/80 rounded-lg px-2 py-1 animate-in fade-in">
+                    <span className="text-[10px] text-red-200 font-semibold mr-0.5">Delete?</span>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await deleteSkill(skill.id);
+                        setDeletingSkillId(null);
+                      }}
+                      className="px-2 py-0.5 rounded bg-red-600 hover:bg-red-500 text-white text-[10px] font-bold transition-colors"
+                    >
+                      Yes
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDeletingSkillId(null)}
+                      className="px-1.5 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-[10px] transition-colors"
+                    >
+                      No
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingSkill(skill);
+                        setIsNew(false);
+                      }}
+                      className="p-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-zinc-300 transition-colors"
+                      title="Edit Skill"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDeletingSkillId(skill.id)}
+                      className="p-1.5 rounded-lg bg-zinc-900 hover:bg-red-950/40 text-zinc-400 hover:text-red-400 transition-colors"
+                      title="Delete Skill"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ))}

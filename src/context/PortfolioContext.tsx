@@ -223,20 +223,16 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [processSteps, setProcessSteps] = useState<ProcessStep[]>(DEFAULT_PROCESS);
   const [skills, setSkills] = useState<SkillItem[]>(() => {
     try {
+      const deletedRaw = localStorage.getItem('soma_deleted_skill_ids');
+      const deletedSet: string[] = deletedRaw ? JSON.parse(deletedRaw) : [];
       const c = localStorage.getItem('soma_cache_skills');
       if (c) {
         const parsed = JSON.parse(c);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const existingIds = new Set(parsed.map((p: SkillItem) => p.id));
-          const merged = [...parsed];
-          for (const ds of DEFAULT_SKILLS) {
-            if (!existingIds.has(ds.id)) {
-              merged.push(ds);
-            }
-          }
-          return merged;
+          return parsed.filter((s: SkillItem) => !deletedSet.includes(s.id));
         }
       }
+      return DEFAULT_SKILLS.filter((s) => !deletedSet.includes(s.id));
     } catch {}
     return DEFAULT_SKILLS;
   });
@@ -437,19 +433,24 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     // 8. Skills
     const unsubSkills = onSnapshot(collection(db, 'skills'), (snapshot) => {
+      let deletedSet: string[] = [];
+      try {
+        const deletedRaw = localStorage.getItem('soma_deleted_skill_ids');
+        if (deletedRaw) deletedSet = JSON.parse(deletedRaw);
+      } catch {}
+
       if (!snapshot.empty) {
-        const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as SkillItem));
-        const existingIds = new Set(items.map((i) => i.id));
-        const merged = [...items];
-        for (const defaultSkill of DEFAULT_SKILLS) {
-          if (!existingIds.has(defaultSkill.id)) {
-            merged.push(defaultSkill);
-          }
-        }
-        merged.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
-        setSkills(merged);
+        const items = snapshot.docs
+          .map((d) => ({ id: d.id, ...d.data() } as SkillItem))
+          .filter((s) => !deletedSet.includes(s.id));
+        items.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+        setSkills(items);
+        try {
+          localStorage.setItem('soma_cache_skills', JSON.stringify(items));
+        } catch {}
       } else {
-        setSkills(DEFAULT_SKILLS);
+        const remaining = DEFAULT_SKILLS.filter((s) => !deletedSet.includes(s.id));
+        setSkills(remaining);
       }
     }, (err) => {
       console.warn('Using default skills:', err.message);
@@ -850,6 +851,12 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     setSkills(updatedList);
 
     try {
+      const deletedRaw = localStorage.getItem('soma_deleted_skill_ids');
+      if (deletedRaw) {
+        const deletedSet: string[] = JSON.parse(deletedRaw);
+        const filtered = deletedSet.filter((delId) => delId !== skill.id);
+        localStorage.setItem('soma_deleted_skill_ids', JSON.stringify(filtered));
+      }
       localStorage.setItem('soma_cache_skills', JSON.stringify(updatedList));
       await setDoc(doc(db, 'skills', skill.id), skill, { merge: true });
     } catch (error) {
@@ -861,6 +868,12 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const updatedList = skills.filter((s) => s.id !== id);
     setSkills(updatedList);
     try {
+      const deletedRaw = localStorage.getItem('soma_deleted_skill_ids');
+      const deletedSet: string[] = deletedRaw ? JSON.parse(deletedRaw) : [];
+      if (!deletedSet.includes(id)) {
+        deletedSet.push(id);
+        localStorage.setItem('soma_deleted_skill_ids', JSON.stringify(deletedSet));
+      }
       localStorage.setItem('soma_cache_skills', JSON.stringify(updatedList));
       await deleteDoc(doc(db, 'skills', id));
     } catch (error) {
