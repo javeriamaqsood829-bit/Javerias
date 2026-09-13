@@ -48,10 +48,10 @@ export const HeroSection: React.FC = () => {
               </span>
             </div>
 
-            {/* Main Heading matching reference pic typography */}
+            {/* Main Heading matching reference pic typography - scaled down for clean, balanced visual proportions */}
             <h1
               id="hero-heading"
-              className="font-impact uppercase tracking-tight text-white leading-[0.93] text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.25rem] select-none"
+              className="font-impact uppercase tracking-tight text-white leading-[0.96] text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] xl:text-[3.75rem] select-none"
             >
               <span className="block text-white">{line1}</span>
               {line2 && <span className="block text-white">{line2}</span>}

@@ -27,7 +27,7 @@ export const SkillsSection: React.FC = () => {
           </div>
           <h2
             id="skills-heading"
-            className="font-impact uppercase tracking-tight text-4xl sm:text-5xl md:text-6xl text-white leading-[1.02]"
+            className="font-impact uppercase tracking-tight text-3xl sm:text-4xl md:text-5xl text-white leading-[1.02]"
           >
             TECHNICAL &amp; CREATIVE SKILLS
           </h2>

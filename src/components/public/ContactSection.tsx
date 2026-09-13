@@ -74,7 +74,7 @@ export const ContactSection: React.FC = () => {
           </div>
           <h2
             id="contact-heading"
-            className="font-impact uppercase tracking-tight text-4xl sm:text-5xl md:text-6xl text-white leading-[1.02]"
+            className="font-impact uppercase tracking-tight text-3xl sm:text-4xl md:text-5xl text-white leading-[1.02]"
           >
             LET'S DISCUSS YOUR <span className="text-[#f59e0b]">GROWTH TARGETS</span>
           </h2>

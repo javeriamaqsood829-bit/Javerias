@@ -24,7 +24,7 @@ export const CtaSection: React.FC = () => {
 
           <h2
             id="cta-banner-heading"
-            className="font-impact uppercase tracking-tight text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white max-w-4xl mx-auto leading-[0.98]"
+            className="font-impact uppercase tracking-tight text-3xl sm:text-4xl md:text-5xl text-white max-w-3xl mx-auto leading-[1.0]"
           >
             READY TO GROW YOUR <span className="text-[#f59e0b]">DIGITAL PRESENCE?</span>
           </h2>
