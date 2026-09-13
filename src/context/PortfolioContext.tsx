@@ -267,6 +267,37 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     });
   }, []);
 
+  // Synchronize dynamic SEO title, meta description & favicon to browser DOM
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    if (seoSettings?.metaTitle) {
+      document.title = seoSettings.metaTitle;
+    }
+
+    const descMeta = document.querySelector('meta[name="description"]');
+    if (descMeta && seoSettings?.metaDescription) {
+      descMeta.setAttribute('content', seoSettings.metaDescription);
+    }
+
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle && (seoSettings?.ogTitle || seoSettings?.metaTitle)) {
+      ogTitle.setAttribute('content', seoSettings.ogTitle || seoSettings.metaTitle);
+    }
+
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc && (seoSettings?.ogDescription || seoSettings?.metaDescription)) {
+      ogDesc.setAttribute('content', seoSettings.ogDescription || seoSettings.metaDescription);
+    }
+
+    if (siteSettings?.faviconUrl) {
+      const favLinks = document.querySelectorAll<HTMLLinkElement>("link[rel*='icon']");
+      favLinks.forEach((l) => {
+        l.href = siteSettings.faviconUrl!;
+      });
+    }
+  }, [seoSettings, siteSettings]);
+
   // Auth observer with strict authorized owner email verification
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {

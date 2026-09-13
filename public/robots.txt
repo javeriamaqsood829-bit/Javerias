@@ -15,3 +15,5 @@ Allow: /apple-touch-icon.png
 User-agent: Google-Favicon
 Allow: /
 
+Sitemap: https://somadigitalmarketer.com/sitemap.xml
+

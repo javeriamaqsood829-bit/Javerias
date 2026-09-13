@@ -690,15 +690,18 @@ export const DEFAULT_PAGE_SECTIONS: PageSectionConfig[] = [
 ];
 
 export const DEFAULT_SEO: SeoSettings = {
-  metaTitle: 'Soma | Senior Digital Marketer & Growth Strategist',
+  metaTitle: 'Soma — Senior Digital Marketer & Growth Strategist',
   metaDescription:
-    'Portfolio of Soma, Senior Digital Marketing & Growth Strategist. Turning digital strategy into scalable pipeline and revenue through SEO, Paid Ads, Content, and Analytics.',
-  keywords: 'digital marketing, growth strategist, SEO consultant, performance marketing, meta ads, conversion rate optimization, digital marketer portfolio, Soma marketer',
-  ogTitle: 'Soma | Senior Digital Marketer & Growth Strategist',
-  ogDescription: 'Turning digital strategy into scalable revenue through SEO, Paid Ads, Content, and Performance Analytics.',
-  ogImage: '/src/assets/images/soma_hero_portrait_1789197660720.jpg',
-  twitterTitle: 'Soma | Senior Digital Marketer & Growth Strategist',
-  twitterDescription: 'Turning digital strategy into scalable revenue through SEO, Paid Ads, Content, and Performance Analytics.',
-  canonicalUrl: 'https://soma.growthdigital.io',
+    'Official portfolio of Soma, Senior Digital Marketer & Growth Strategist. Scaling businesses through high-ROAS Meta & Google Ads, data-driven SEO, conversion rate optimization, and omnichannel growth architecture.',
+  keywords:
+    'somadigitalmarketer, somadigitalmarketer.com, Soma digital marketer, digital marketing expert, growth strategist, performance marketing, SEO specialist, meta ads, google ads, conversion rate optimization, digital marketing consultant',
+  ogTitle: 'Soma — Senior Digital Marketer & Growth Strategist',
+  ogDescription:
+    'Scaling high-growth brands with data-driven Meta & Google Ads, full-funnel SEO, conversion rate optimization, and predictable growth architecture.',
+  ogImage: 'https://somadigitalmarketer.com/favicon-512x512.png',
+  twitterTitle: 'Soma — Senior Digital Marketer & Growth Strategist',
+  twitterDescription:
+    'Scaling high-growth brands with data-driven Meta & Google Ads, full-funnel SEO, conversion rate optimization, and predictable growth architecture.',
+  canonicalUrl: 'https://somadigitalmarketer.com/',
   robots: 'index, follow',
 };

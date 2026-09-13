@@ -844,11 +844,11 @@ export const AdminSettings: React.FC = () => {
                 </div>
               </div>
               <a href="#" className="block text-base font-semibold text-[#99c3ff] hover:underline leading-snug">
-                {seoForm?.metaTitle || 'Soma | Digital Marketer Portfolio & CMS'}
+                {seoForm?.metaTitle || 'Soma — Senior Digital Marketer & Growth Strategist'}
               </a>
               <p className="text-xs text-[#bdc1c6] line-clamp-2 leading-relaxed">
                 {seoForm?.metaDescription ||
-                  'Personal portfolio website and exclusive admin CMS for Soma, a professional digital marketing and growth strategist.'}
+                  'Official portfolio of Soma, Senior Digital Marketer & Growth Strategist. Scaling businesses through high-ROAS Meta & Google Ads, data-driven SEO, conversion rate optimization, and omnichannel growth architecture.'}
               </p>
             </div>
 
@@ -872,11 +872,11 @@ export const AdminSettings: React.FC = () => {
                 </div>
               </div>
               <a href="#" className="block text-base font-semibold text-[#1a0dab] hover:underline leading-snug">
-                {seoForm?.metaTitle || 'Soma | Digital Marketer Portfolio & CMS'}
+                {seoForm?.metaTitle || 'Soma — Senior Digital Marketer & Growth Strategist'}
               </a>
               <p className="text-xs text-[#4d5156] line-clamp-2 leading-relaxed">
                 {seoForm?.metaDescription ||
-                  'Personal portfolio website and exclusive admin CMS for Soma, a professional digital marketing and growth strategist.'}
+                  'Official portfolio of Soma, Senior Digital Marketer & Growth Strategist. Scaling businesses through high-ROAS Meta & Google Ads, data-driven SEO, conversion rate optimization, and omnichannel growth architecture.'}
               </p>
             </div>
           </div>
