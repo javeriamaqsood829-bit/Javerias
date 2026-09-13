@@ -51,19 +51,43 @@ const PortfolioMain: React.FC = () => {
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
-  // Update dynamic page title from settings
+  // Update dynamic page title, meta tags, and favicon from settings
   useEffect(() => {
-    if (seoSettings?.metaTitle) {
-      document.title = seoSettings.metaTitle;
-    } else if (siteSettings?.ownerName) {
-      document.title = `${siteSettings.ownerName} | Digital Marketer & Growth Strategist`;
+    const title = seoSettings?.metaTitle || (siteSettings?.ownerName ? `${siteSettings.ownerName} | Digital Marketer & Growth Strategist` : 'Soma — Senior Digital Marketer & Growth Strategist');
+    document.title = title;
+
+    // Update meta description
+    if (seoSettings?.metaDescription) {
+      let descMeta = document.querySelector('meta[name="description"]');
+      if (!descMeta) {
+        descMeta = document.createElement('meta');
+        descMeta.setAttribute('name', 'description');
+        document.head.appendChild(descMeta);
+      }
+      descMeta.setAttribute('content', seoSettings.metaDescription);
+
+      let ogDescMeta = document.querySelector('meta[property="og:description"]');
+      if (ogDescMeta) ogDescMeta.setAttribute('content', seoSettings.metaDescription);
+    }
+
+    // Update og:title
+    let ogTitleMeta = document.querySelector('meta[property="og:title"]');
+    if (ogTitleMeta) ogTitleMeta.setAttribute('content', title);
+
+    // Update dynamic favicon if custom URL provided
+    if (siteSettings?.faviconUrl) {
+      const favicons = document.querySelectorAll<HTMLLinkElement>('link[rel*="icon"]');
+      favicons.forEach((el) => {
+        el.href = siteSettings.faviconUrl!;
+      });
     }
   }, [seoSettings, siteSettings]);
 
   // Section visibility helper
   const isSectionVisible = (id: string) => {
-    const sec = pageSections.find((s) => s.id === id);
-    return sec ? sec.visible : true;
+    const sec = pageSections.find((s) => s.id === id || s.name === id);
+    if (!sec) return true;
+    return sec.visible !== false && sec.enabled !== false;
   };
 
   // Render Admin View

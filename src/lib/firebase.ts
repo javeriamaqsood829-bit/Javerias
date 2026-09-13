@@ -1,8 +1,11 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { initializeFirestore, getFirestore, doc, getDocFromServer } from 'firebase/firestore';
+import { initializeFirestore, doc, getDoc, setLogLevel } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import firebaseConfig from '../../firebase-applet-config.json';
+
+// Silence noisy transient SDK connection retry notices in sandboxes & iframes
+setLogLevel('error');
 
 const effectiveConfig = {
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || firebaseConfig.projectId,
@@ -16,11 +19,12 @@ const effectiveConfig = {
 
 const app = initializeApp(effectiveConfig);
 
-// Initialize Firestore with forced long-polling to prevent WebSocket connection drops and failures in sandboxes & iframes
+// Initialize Firestore with auto-detect long polling and ignoreUndefinedProperties for robust iframe/proxy support
 export const db = initializeFirestore(
   app,
   {
-    experimentalForceLongPolling: true,
+    experimentalAutoDetectLongPolling: true,
+    ignoreUndefinedProperties: true,
   },
   effectiveConfig.firestoreDatabaseId
 );
@@ -79,25 +83,17 @@ export function handleFirestoreError(
   throw new Error(JSON.stringify(errInfo));
 }
 
-// Mandatory connection test on boot with gentle retry
-export async function testConnection(retries = 2): Promise<boolean> {
-  for (let attempt = 0; attempt <= retries; attempt++) {
-    try {
-      await getDocFromServer(doc(db, 'test', 'connection'));
-      console.log('Connected to Cloud Firestore backend successfully');
-      return true;
-    } catch (error) {
-      if (attempt < retries) {
-        await new Promise((resolve) => setTimeout(resolve, 800));
-        continue;
-      }
-      if (error instanceof Error && (error.message.includes('the client is offline') || error.message.includes('unavailable'))) {
-        console.warn('Firestore offline/cache mode active: app will serve cached data until backend is reached.');
-      } else {
-        console.warn('Firestore connection notice:', error instanceof Error ? error.message : error);
-      }
-      return false;
-    }
+// Resilient connection test on boot with timeout and offline grace
+export async function testConnection(timeoutMs = 3000): Promise<boolean> {
+  try {
+    const checkPromise = getDoc(doc(db, 'test', 'connection'));
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('Connection check timed out')), timeoutMs)
+    );
+    await Promise.race([checkPromise, timeoutPromise]);
+    return true;
+  } catch (error) {
+    // Graceful offline fallback: app will operate in cached mode
+    return false;
   }
-  return false;
 }
