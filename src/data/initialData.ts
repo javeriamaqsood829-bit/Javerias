@@ -212,18 +212,35 @@ export const DEFAULT_SKILLS: SkillItem[] = [
   { id: 'sk3', name: 'Paid Ads (Meta, Google, TikTok)', category: 'Digital Marketing', percentage: 94, icon: 'Target', displayOrder: 3, published: true },
   { id: 'sk4', name: 'Email & Lifecycle Automation', category: 'Digital Marketing', percentage: 90, icon: 'Mail', displayOrder: 4, published: true },
   { id: 'sk5', name: 'Growth & Funnel CRO', category: 'Digital Marketing', percentage: 88, icon: 'TrendingUp', displayOrder: 5, published: true },
+  { id: 'sk16', name: 'Influencer & Creator Marketing', category: 'Digital Marketing', percentage: 90, icon: 'Users', displayOrder: 6, published: true },
+  { id: 'sk17', name: 'B2B Lead Gen & Account-Based Marketing (ABM)', category: 'Digital Marketing', percentage: 91, icon: 'Briefcase', displayOrder: 7, published: true },
+  { id: 'sk18', name: 'Conversion Rate Optimization (CRO)', category: 'Digital Marketing', percentage: 95, icon: 'Zap', displayOrder: 8, published: true },
+  { id: 'sk19', name: 'Content Marketing & Distribution', category: 'Digital Marketing', percentage: 93, icon: 'BookOpen', displayOrder: 9, published: true },
+  { id: 'sk20', name: 'Local SEO & Google Business Profile', category: 'Digital Marketing', percentage: 92, icon: 'MapPin', displayOrder: 10, published: true },
+  { id: 'sk21', name: 'App Store Optimization (ASO) & Mobile Growth', category: 'Digital Marketing', percentage: 87, icon: 'Smartphone', displayOrder: 11, published: true },
+
   // Creative
-  { id: 'sk6', name: 'Direct Response Copywriting', category: 'Creative', percentage: 93, icon: 'FileText', displayOrder: 6, published: true },
-  { id: 'sk7', name: 'Visual Direction & Ad Creative', category: 'Creative', percentage: 88, icon: 'Image', displayOrder: 7, published: true },
-  { id: 'sk8', name: 'Brand Storytelling & Strategy', category: 'Creative', percentage: 91, icon: 'Award', displayOrder: 8, published: true },
-  { id: 'sk9', name: 'Short-Form Video Ideation', category: 'Creative', percentage: 89, icon: 'Video', displayOrder: 9, published: true },
-  // Tools
-  { id: 'sk10', name: 'Google Analytics 4 (GA4)', category: 'Tools', percentage: 96, icon: 'BarChart2', displayOrder: 10, published: true },
-  { id: 'sk11', name: 'Meta Business Suite & Ads Mgr', category: 'Tools', percentage: 95, icon: 'Layers', displayOrder: 11, published: true },
-  { id: 'sk12', name: 'Google Ads & Search Console', category: 'Tools', percentage: 92, icon: 'Globe', displayOrder: 12, published: true },
-  { id: 'sk13', name: 'Klaviyo & HubSpot CRM', category: 'Tools', percentage: 90, icon: 'Inbox', displayOrder: 13, published: true },
-  { id: 'sk14', name: 'Ahrefs & SEMrush', category: 'Tools', percentage: 91, icon: 'Search', displayOrder: 14, published: true },
-  { id: 'sk15', name: 'Figma & Adobe Creative Cloud', category: 'Tools', percentage: 86, icon: 'PenTool', displayOrder: 15, published: true },
+  { id: 'sk6', name: 'Direct Response Copywriting', category: 'Creative', percentage: 93, icon: 'FileText', displayOrder: 12, published: true },
+  { id: 'sk7', name: 'Visual Direction & Ad Creative', category: 'Creative', percentage: 88, icon: 'Image', displayOrder: 13, published: true },
+  { id: 'sk8', name: 'Brand Storytelling & Strategy', category: 'Creative', percentage: 91, icon: 'Award', displayOrder: 14, published: true },
+  { id: 'sk9', name: 'Short-Form Video Ideation & UGC', category: 'Creative', percentage: 92, icon: 'Video', displayOrder: 15, published: true },
+  { id: 'sk22', name: 'High-Converting Landing Page Design', category: 'Creative', percentage: 94, icon: 'Layout', displayOrder: 16, published: true },
+  { id: 'sk23', name: 'Ad Creative Testing & Matrix Iteration', category: 'Creative', percentage: 95, icon: 'Sparkles', displayOrder: 17, published: true },
+  { id: 'sk24', name: 'Brand Identity & Visual Guidelines', category: 'Creative', percentage: 89, icon: 'Palette', displayOrder: 18, published: true },
+
+  // Tools & Platforms
+  { id: 'sk10', name: 'Google Analytics 4 (GA4)', category: 'Tools', percentage: 96, icon: 'BarChart2', displayOrder: 19, published: true },
+  { id: 'sk11', name: 'Meta Business Suite & Ads Mgr', category: 'Tools', percentage: 95, icon: 'Layers', displayOrder: 20, published: true },
+  { id: 'sk12', name: 'Google Ads & Search Console', category: 'Tools', percentage: 92, icon: 'Globe', displayOrder: 21, published: true },
+  { id: 'sk13', name: 'Klaviyo & HubSpot CRM', category: 'Tools', percentage: 90, icon: 'Inbox', displayOrder: 22, published: true },
+  { id: 'sk14', name: 'Ahrefs & SEMrush', category: 'Tools', percentage: 91, icon: 'Search', displayOrder: 23, published: true },
+  { id: 'sk15', name: 'Figma & Adobe Creative Cloud', category: 'Tools', percentage: 86, icon: 'PenTool', displayOrder: 24, published: true },
+  { id: 'sk25', name: 'Google Tag Manager (GTM) & CAPI', category: 'Tools', percentage: 94, icon: 'Code', displayOrder: 25, published: true },
+  { id: 'sk26', name: 'Looker Studio & BI Dashboards', category: 'Tools', percentage: 93, icon: 'PieChart', displayOrder: 26, published: true },
+  { id: 'sk27', name: 'Shopify Plus & E-Commerce Stack', category: 'Tools', percentage: 91, icon: 'ShoppingBag', displayOrder: 27, published: true },
+  { id: 'sk28', name: 'Triple Whale & Attribution Tools', category: 'Tools', percentage: 92, icon: 'Activity', displayOrder: 28, published: true },
+  { id: 'sk29', name: 'AI Marketing Automation & Prompting', category: 'Tools', percentage: 94, icon: 'Cpu', displayOrder: 29, published: true },
+  { id: 'sk30', name: 'Hotjar & Clarity Behavioral CRO', category: 'Tools', percentage: 93, icon: 'Eye', displayOrder: 30, published: true },
 ];
 
 export const DEFAULT_EXPERIENCE: ExperienceItem[] = [

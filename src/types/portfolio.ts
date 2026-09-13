@@ -83,7 +83,7 @@ export interface ProcessStep {
 export interface SkillItem {
   id: string;
   name: string;
-  category: 'Digital Marketing' | 'Creative' | 'Tools';
+  category: 'Digital Marketing' | 'Creative' | 'Tools' | string;
   percentage: number;
   icon?: string;
   displayOrder: number;

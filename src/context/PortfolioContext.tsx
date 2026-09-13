@@ -224,7 +224,19 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [skills, setSkills] = useState<SkillItem[]>(() => {
     try {
       const c = localStorage.getItem('soma_cache_skills');
-      if (c) return JSON.parse(c);
+      if (c) {
+        const parsed = JSON.parse(c);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const existingIds = new Set(parsed.map((p: SkillItem) => p.id));
+          const merged = [...parsed];
+          for (const ds of DEFAULT_SKILLS) {
+            if (!existingIds.has(ds.id)) {
+              merged.push(ds);
+            }
+          }
+          return merged;
+        }
+      }
     } catch {}
     return DEFAULT_SKILLS;
   });
@@ -427,8 +439,17 @@ export const PortfolioProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     const unsubSkills = onSnapshot(collection(db, 'skills'), (snapshot) => {
       if (!snapshot.empty) {
         const items = snapshot.docs.map((d) => ({ id: d.id, ...d.data() } as SkillItem));
-        items.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
-        setSkills(items);
+        const existingIds = new Set(items.map((i) => i.id));
+        const merged = [...items];
+        for (const defaultSkill of DEFAULT_SKILLS) {
+          if (!existingIds.has(defaultSkill.id)) {
+            merged.push(defaultSkill);
+          }
+        }
+        merged.sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+        setSkills(merged);
+      } else {
+        setSkills(DEFAULT_SKILLS);
       }
     }, (err) => {
       console.warn('Using default skills:', err.message);

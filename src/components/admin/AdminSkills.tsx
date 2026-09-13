@@ -37,7 +37,7 @@ export const AdminSkills: React.FC = () => {
             Skills &amp; Tooling Management
           </h1>
           <p className="text-xs text-zinc-400">
-            Configure technical competencies, mastery levels, and filter groupings.
+            Configure technical competencies, mastery levels, and filter groupings ({skills.length} total competencies configured).
           </p>
         </div>
 
@@ -70,7 +70,7 @@ export const AdminSkills: React.FC = () => {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div>
               <label className="block text-xs font-mono uppercase text-zinc-400 mb-1">
                 Skill Name *
@@ -97,7 +97,22 @@ export const AdminSkills: React.FC = () => {
                 <option value="Digital Marketing">Digital Marketing</option>
                 <option value="Creative">Creative</option>
                 <option value="Tools">Tools &amp; Platforms</option>
+                <option value="Analytics & Data">Analytics &amp; Data</option>
+                <option value="Growth & Strategy">Growth &amp; Strategy</option>
               </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-mono uppercase text-zinc-400 mb-1">
+                Icon Name (Lucide)
+              </label>
+              <input
+                type="text"
+                value={editingSkill.icon || ''}
+                onChange={(e) => setEditingSkill({ ...editingSkill, icon: e.target.value })}
+                placeholder="e.g. Target, BarChart2, Zap"
+                className="w-full px-4 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-sm focus:outline-none focus:border-orange-500"
+              />
             </div>
 
             <div>
