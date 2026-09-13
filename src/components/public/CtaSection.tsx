@@ -15,16 +15,18 @@ export const CtaSection: React.FC = () => {
           {/* Top highlight line */}
           <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-orange-500 to-transparent" />
 
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-zinc-900 border border-orange-500/30 text-orange-400 text-xs font-mono uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Scale Your Pipeline</span>
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#141416]/90 border border-zinc-800/80 shadow-md backdrop-blur-sm mb-4">
+            <span className="w-2 h-2 rounded-full bg-[#f59e0b] shadow-[0_0_8px_rgba(245,158,11,0.7)]" />
+            <span className="text-[#f59e0b] text-xs sm:text-[13px] font-bold uppercase tracking-[0.14em]">
+              Scale Your Pipeline
+            </span>
           </div>
 
           <h2
             id="cta-banner-heading"
-            className="font-heading font-extrabold text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-white uppercase tracking-tight max-w-4xl mx-auto leading-tight"
+            className="font-impact uppercase tracking-tight text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-white max-w-4xl mx-auto leading-[0.98]"
           >
-            READY TO GROW YOUR DIGITAL PRESENCE?
+            READY TO GROW YOUR <span className="text-[#f59e0b]">DIGITAL PRESENCE?</span>
           </h2>
 
           <p className="text-zinc-300 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">

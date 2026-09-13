@@ -34,11 +34,11 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
 };
 
 export const DEFAULT_HERO: HeroContent = {
-  badge: 'DIGITAL MARKETING SPECIALIST & GROWTH STRATEGIST',
+  badge: 'DIGITAL MARKETING PROFESSIONAL',
   mainHeading: 'TURNING DIGITAL STRATEGY',
   highlightedText: 'INTO REAL GROWTH.',
   description:
-    'I help brands build an undeniable digital presence through high-impact organic strategy, paid acquisition, conversion-driven funnels, and data-backed performance marketing.',
+    'I help brands build a stronger digital presence through strategic marketing, engaging content, social media, SEO, and conversion-focused digital solutions.',
   profileImage: '/src/assets/images/soma_hero_portrait_1789197660720.jpg',
   primaryCtaText: 'View My Work',
   primaryCtaLink: '#projects',

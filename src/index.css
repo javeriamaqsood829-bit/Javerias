@@ -2,7 +2,8 @@
 
 @layer base {
   :root {
-    --font-heading: 'Syne', 'Plus Jakarta Sans', sans-serif;
+    --font-impact: 'Anton', 'Oswald', 'Bebas Neue', sans-serif;
+    --font-heading: 'Anton', 'Oswald', 'Syne', sans-serif;
     --font-sans: 'Plus Jakarta Sans', sans-serif;
     --font-display: 'Space Grotesk', 'Syne', sans-serif;
   }
@@ -16,9 +17,13 @@
   }
 
   ::selection {
-    background-color: #f97316;
+    background-color: #f59e0b;
     color: #000000;
   }
+}
+
+.font-impact {
+  font-family: var(--font-impact);
 }
 
 .font-heading {

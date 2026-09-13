@@ -108,18 +108,20 @@ export const ServicesSection: React.FC = () => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-orange-400 text-xs font-mono uppercase tracking-widest mb-3">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Full-Stack Capabilities</span>
+            <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#141416]/90 border border-zinc-800/80 shadow-md backdrop-blur-sm mb-4">
+              <span className="w-2 h-2 rounded-full bg-[#f59e0b] shadow-[0_0_8px_rgba(245,158,11,0.7)]" />
+              <span className="text-[#f59e0b] text-xs sm:text-[13px] font-bold uppercase tracking-[0.14em]">
+                Full-Stack Capabilities
+              </span>
             </div>
             <h2
               id="services-heading"
-              className="font-heading font-extrabold text-3xl sm:text-4xl md:text-5xl text-white tracking-tight uppercase"
+              className="font-impact uppercase tracking-tight text-4xl sm:text-5xl md:text-6xl text-white leading-[1.02]"
             >
               STRATEGIC SERVICES
             </h2>
           </div>
-          <p className="text-zinc-400 text-sm sm:text-base max-w-md">
+          <p className="text-zinc-300 text-sm sm:text-base max-w-md">
             Holistic growth architectures engineered to acquire, convert, and retain high-value customer cohorts.
           </p>
         </div>

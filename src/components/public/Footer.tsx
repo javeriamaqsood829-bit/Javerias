@@ -54,10 +54,10 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateAdmin }) => {
           {/* Brand Info */}
           <div className="md:col-span-5 space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center text-black font-extrabold text-base">
+              <div className="w-8 h-8 rounded-lg bg-[#f59e0b] flex items-center justify-center text-black font-extrabold text-base">
                 {siteSettings.brandName ? siteSettings.brandName.charAt(0) : 'S'}
               </div>
-              <span className="font-heading font-extrabold text-lg text-white tracking-tight">
+              <span className="font-impact uppercase tracking-wide text-xl text-white">
                 {siteSettings.brandName || 'SOMA'}
               </span>
             </div>

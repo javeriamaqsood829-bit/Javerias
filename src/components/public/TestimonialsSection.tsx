@@ -112,17 +112,19 @@ export const TestimonialsSection: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-16 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-orange-400 text-xs font-mono uppercase tracking-widest mb-3">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Client Endorsements &amp; Results</span>
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#141416]/90 border border-zinc-800/80 shadow-md backdrop-blur-sm mb-4">
+            <span className="w-2 h-2 rounded-full bg-[#f59e0b] shadow-[0_0_8px_rgba(245,158,11,0.7)]" />
+            <span className="text-[#f59e0b] text-xs sm:text-[13px] font-bold uppercase tracking-[0.14em]">
+              Client Endorsements &amp; Results
+            </span>
           </div>
           <h2
             id="testimonials-heading"
-            className="font-heading font-extrabold text-3xl sm:text-4xl md:text-5xl text-white tracking-tight uppercase"
+            className="font-impact uppercase tracking-tight text-4xl sm:text-5xl md:text-6xl text-white leading-[1.02]"
           >
             TRUSTED BY FOUNDERS &amp; EXECUTIVES
           </h2>
-          <p className="text-zinc-400 text-sm sm:text-base mt-2">
+          <p className="text-zinc-300 text-sm sm:text-base mt-2">
             Direct feedback and verifiable metrics from business leaders and CMOs whose brands we scaled.
           </p>
         </div>

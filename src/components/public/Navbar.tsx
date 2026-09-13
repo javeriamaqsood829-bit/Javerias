@@ -43,10 +43,10 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateAdmin }) => {
             {siteSettings.brandName ? siteSettings.brandName.charAt(0) : 'A'}
           </div>
           <div className="flex flex-col">
-            <span className="font-heading font-extrabold text-lg sm:text-xl tracking-tight text-white group-hover:text-orange-400 transition-colors">
+            <span className="font-impact uppercase text-xl tracking-wide text-white group-hover:text-[#f59e0b] transition-colors leading-tight">
               {siteSettings.brandName || 'DIGITAL STRATEGIST'}
             </span>
-            <span className="text-[10px] tracking-widest text-zinc-400 uppercase font-mono">
+            <span className="text-[10px] tracking-widest text-[#f59e0b] uppercase font-mono font-semibold">
               Growth &amp; Performance
             </span>
           </div>

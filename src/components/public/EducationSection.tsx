@@ -12,11 +12,13 @@ export const EducationSection: React.FC = () => {
           {/* Education Column */}
           <div className="lg:col-span-5 space-y-6">
             <div className="flex flex-col items-start mb-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-orange-400 text-xs font-mono uppercase tracking-widest mb-3">
-                <GraduationCap className="w-3.5 h-3.5" />
-                <span>Academic Foundation</span>
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#141416]/90 border border-zinc-800/80 shadow-md backdrop-blur-sm mb-4">
+                <span className="w-2 h-2 rounded-full bg-[#f59e0b] shadow-[0_0_8px_rgba(245,158,11,0.7)]" />
+                <span className="text-[#f59e0b] text-xs sm:text-[13px] font-bold uppercase tracking-[0.14em]">
+                  Academic Foundation
+                </span>
               </div>
-              <h3 className="font-heading font-extrabold text-2xl sm:text-3xl text-white uppercase">
+              <h3 className="font-impact uppercase tracking-tight text-3xl sm:text-4xl text-white">
                 EDUCATION
               </h3>
             </div>
@@ -50,11 +52,13 @@ export const EducationSection: React.FC = () => {
           {/* Certifications Column */}
           <div className="lg:col-span-7 space-y-6">
             <div className="flex flex-col items-start mb-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-orange-400 text-xs font-mono uppercase tracking-widest mb-3">
-                <Award className="w-3.5 h-3.5" />
-                <span>Industry Accreditations</span>
+              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#141416]/90 border border-zinc-800/80 shadow-md backdrop-blur-sm mb-4">
+                <span className="w-2 h-2 rounded-full bg-[#f59e0b] shadow-[0_0_8px_rgba(245,158,11,0.7)]" />
+                <span className="text-[#f59e0b] text-xs sm:text-[13px] font-bold uppercase tracking-[0.14em]">
+                  Industry Accreditations
+                </span>
               </div>
-              <h3 className="font-heading font-extrabold text-2xl sm:text-3xl text-white uppercase">
+              <h3 className="font-impact uppercase tracking-tight text-3xl sm:text-4xl text-white">
                 CERTIFICATIONS
               </h3>
             </div>

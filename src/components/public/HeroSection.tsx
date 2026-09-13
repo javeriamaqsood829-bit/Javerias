@@ -5,14 +5,30 @@ import { usePortfolio } from '../../context/PortfolioContext';
 export const HeroSection: React.FC = () => {
   const { heroContent, siteSettings } = usePortfolio();
 
+  // Split heading into balanced lines to match reference image precisely
+  const fullMain = (heroContent.mainHeading || 'TURNING DIGITAL STRATEGY').trim();
+  const highlighted = (heroContent.highlightedText || 'INTO REAL GROWTH.').trim();
+
+  let line1 = fullMain;
+  let line2 = '';
+
+  const words = fullMain.split(/\s+/);
+  if (words.length >= 3 && words[0].toUpperCase() === 'TURNING' && words[1].toUpperCase() === 'DIGITAL') {
+    line1 = `${words[0]} ${words[1]}`;
+    line2 = words.slice(2).join(' ');
+  } else if (words.length > 2) {
+    line1 = words.slice(0, 2).join(' ');
+    line2 = words.slice(2).join(' ');
+  }
+
   return (
     <section
       id="home"
-      className="relative min-h-[92vh] pt-32 pb-20 flex items-center justify-center overflow-hidden bg-[#080808]"
+      className="relative min-h-[92vh] pt-32 pb-20 flex items-center justify-center overflow-hidden bg-[#08080a]"
     >
-      {/* Background glow effects */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-orange-500/10 rounded-full blur-[140px] pointer-events-none -z-10" />
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-amber-500/5 rounded-full blur-[120px] pointer-events-none -z-10" />
+      {/* Background warm amber glow effects matching reference photo */}
+      <div className="absolute top-1/4 -left-10 w-[550px] h-[550px] bg-amber-500/10 rounded-full blur-[160px] pointer-events-none -z-10" />
+      <div className="absolute top-1/3 right-0 sm:right-10 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[140px] pointer-events-none -z-10" />
 
       {/* Grid line overlay */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f29370f_1px,transparent_1px),linear-gradient(to_bottom,#1f29370f_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_40%,#000_70%,transparent_100%)] pointer-events-none -z-10" />
@@ -21,30 +37,33 @@ export const HeroSection: React.FC = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Column: Copy & CTAs */}
           <div className="lg:col-span-7 flex flex-col items-start space-y-6">
-            {/* Small Label Badge */}
+            {/* Pill Badge matching reference pic */}
             <div
               id="hero-badge"
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900/90 border border-orange-500/30 shadow-inner text-orange-400 text-xs font-semibold uppercase tracking-wider"
+              className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#141416]/90 border border-zinc-800/80 shadow-md backdrop-blur-sm"
             >
-              <Sparkles className="w-3.5 h-3.5 text-orange-400 animate-pulse" />
-              <span>{heroContent.badge || 'DIGITAL MARKETING PROFESSIONAL'}</span>
+              <span className="w-2 h-2 rounded-full bg-[#f59e0b] shadow-[0_0_8px_rgba(245,158,11,0.7)]" />
+              <span className="text-[#f59e0b] text-xs sm:text-[13px] font-bold uppercase tracking-[0.14em]">
+                {heroContent.badge || 'DIGITAL MARKETING PROFESSIONAL'}
+              </span>
             </div>
 
-            {/* Main Heading */}
+            {/* Main Heading matching reference pic typography */}
             <h1
               id="hero-heading"
-              className="font-heading font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-tight text-white leading-[1.08] uppercase"
+              className="font-impact uppercase tracking-tight text-white leading-[0.93] text-5xl sm:text-6xl md:text-7xl lg:text-[5.5rem] xl:text-[6.25rem] select-none"
             >
-              {heroContent.mainHeading || 'TURNING DIGITAL STRATEGY'}{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-400 to-orange-500 underline decoration-orange-500/30 decoration-wavy decoration-2">
-                {heroContent.highlightedText || 'INTO REAL GROWTH.'}
+              <span className="block text-white">{line1}</span>
+              {line2 && <span className="block text-white">{line2}</span>}
+              <span className="block text-[#f59e0b] mt-1">
+                {highlighted}
               </span>
             </h1>
 
             {/* Supporting Paragraph */}
             <p
               id="hero-description"
-              className="text-base sm:text-lg text-zinc-400 max-w-2xl leading-relaxed font-normal"
+              className="text-base sm:text-lg text-zinc-300 max-w-2xl leading-relaxed font-normal"
             >
               {heroContent.description ||
                 'I help brands build a stronger digital presence through strategic marketing, engaging content, social media, SEO, and conversion-focused digital solutions.'}
@@ -55,7 +74,7 @@ export const HeroSection: React.FC = () => {
               <a
                 id="hero-primary-cta"
                 href={heroContent.primaryCtaLink || '#projects'}
-                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-orange-500 hover:bg-orange-600 text-black font-bold text-sm tracking-wide transition-all duration-200 shadow-xl shadow-orange-500/25 hover:shadow-orange-500/40 hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-[#f59e0b] hover:bg-amber-500 text-black font-bold text-sm tracking-wide transition-all duration-200 shadow-xl shadow-amber-500/25 hover:shadow-amber-500/40 hover:-translate-y-0.5"
               >
                 <span>{heroContent.primaryCtaText || 'View My Work'}</span>
                 <ArrowDownRight className="w-4 h-4 stroke-[2.5]" />
