@@ -13,9 +13,13 @@ import {
   Mail,
   AlertCircle,
   CheckCircle2,
+  Upload,
+  Image as ImageIcon,
+  RefreshCw,
 } from 'lucide-react';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { SocialLink, SiteSettings, SeoSettings } from '../../types/portfolio';
+import { uploadMediaFile } from '../../lib/mediaUpload';
 
 export const AdminSettings: React.FC = () => {
   const {
@@ -66,6 +70,72 @@ export const AdminSettings: React.FC = () => {
   // Social link state
   const [newPlatform, setNewPlatform] = useState('linkedin');
   const [newUrl, setNewUrl] = useState('');
+
+  // Favicon & Logo Manager State
+  const [customFaviconUrl, setCustomFaviconUrl] = useState<string>(() => siteSettings?.faviconUrl || '/favicon.svg');
+  const [customBrandLogoUrl, setCustomBrandLogoUrl] = useState<string>(() => siteSettings?.brandLogoUrl || '/favicon.svg');
+  const [faviconUploading, setFaviconUploading] = useState(false);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [brandSavedNotice, setBrandSavedNotice] = useState(false);
+
+  useEffect(() => {
+    if (siteSettings?.faviconUrl) {
+      setCustomFaviconUrl(siteSettings.faviconUrl);
+    }
+    if (siteSettings?.brandLogoUrl) {
+      setCustomBrandLogoUrl(siteSettings.brandLogoUrl);
+    }
+  }, [siteSettings]);
+
+  const handleUploadFavicon = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setFaviconUploading(true);
+      const res = await uploadMediaFile(file, 'favicons');
+      setCustomFaviconUrl(res.url);
+    } catch (err) {
+      console.error(err);
+      alert('Favicon upload failed');
+    } finally {
+      setFaviconUploading(false);
+    }
+  };
+
+  const handleUploadLogo = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setLogoUploading(true);
+      const res = await uploadMediaFile(file, 'branding');
+      setCustomBrandLogoUrl(res.url);
+    } catch (err) {
+      console.error(err);
+      alert('Logo upload failed');
+    } finally {
+      setLogoUploading(false);
+    }
+  };
+
+  const handleSaveFaviconAndLogo = async () => {
+    const updated = {
+      ...siteSettings,
+      faviconUrl: customFaviconUrl,
+      brandLogoUrl: customBrandLogoUrl,
+    };
+    await updateSiteSettings(updated as SiteSettings);
+
+    // Live update document favicon immediately in browser
+    if (typeof document !== 'undefined') {
+      const linkElements = document.querySelectorAll<HTMLLinkElement>("link[rel*='icon']");
+      linkElements.forEach((link) => {
+        link.href = customFaviconUrl;
+      });
+    }
+
+    setBrandSavedNotice(true);
+    setTimeout(() => setBrandSavedNotice(false), 4000);
+  };
 
   // Handle Admin Email Update
   const handleUpdateEmail = async (e: React.FormEvent) => {
@@ -577,6 +647,309 @@ export const AdminSettings: React.FC = () => {
             onChange={(e) => setSeoForm({ ...seoForm, metaDescription: e.target.value })}
             className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-sm focus:outline-none focus:border-orange-500 resize-none"
           />
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-zinc-900">
+          <span className="text-xs text-zinc-400">
+            * Yeh settings Google search results aur browser tabs me show hoti hain.
+          </span>
+          <button
+            type="button"
+            onClick={async () => {
+              await updateSeoSettings(seoForm);
+              setSavedSection('seo');
+              setTimeout(() => setSavedSection(null), 3000);
+            }}
+            className="px-5 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-black font-bold text-xs flex items-center gap-2 self-start sm:self-auto transition-all shadow-md shadow-orange-500/10 cursor-pointer"
+          >
+            <Check className="w-4 h-4" />
+            <span>Save SEO Settings</span>
+          </button>
+        </div>
+        {savedSection === 'seo' && (
+          <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/50 text-emerald-400 text-xs flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <span>SEO settings saved successfully and live on your website!</span>
+          </div>
+        )}
+      </div>
+
+      {/* Google Search Live Appearance & Favicon Branding Hub */}
+      <div className="p-6 sm:p-8 rounded-3xl bg-zinc-950/90 border border-zinc-800 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h2 className="font-heading font-bold text-lg text-white flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-orange-400" />
+              <span>Google Search Appearance &amp; Brand Favicon</span>
+            </h2>
+            <p className="text-xs text-zinc-400 mt-1">
+              Google search results aur modern browsers ke liye brand favicon preview aur indexing setup.
+            </p>
+          </div>
+          <span className="px-3 py-1 rounded-full text-[11px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 self-start sm:self-auto">
+            Google-Favicon Ready
+          </span>
+        </div>
+
+        {/* Interactive Favicon & Brand Logo Customizer */}
+        <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div className="flex items-center gap-2 text-sm font-semibold text-white">
+              <ImageIcon className="w-4 h-4 text-orange-400" />
+              <span>Favicon &amp; Navbar Brand Logo Uploader</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleSaveFaviconAndLogo}
+              className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-black font-bold text-xs flex items-center gap-1.5 self-start sm:self-auto shadow-md shadow-orange-500/20"
+            >
+              <Check className="w-3.5 h-3.5" />
+              <span>Save Favicon &amp; Logo</span>
+            </button>
+          </div>
+
+          {brandSavedNotice && (
+            <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/50 text-emerald-400 text-xs flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <span>Favicon aur Brand Logo kamyabi se update ho gaya! Website aur browser tab me live sync ho chuka hai.</span>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {/* Favicon Control */}
+            <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-mono uppercase text-zinc-400">
+                  Browser &amp; Google Favicon
+                </label>
+                <div className="w-6 h-6 rounded-lg bg-[#09090b] border border-orange-500/40 p-0.5 flex items-center justify-center">
+                  <img src={customFaviconUrl || '/favicon.svg'} alt="Favicon Preview" className="w-full h-full object-contain" />
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={customFaviconUrl}
+                  onChange={(e) => setCustomFaviconUrl(e.target.value)}
+                  placeholder="/favicon.svg ya https://.../favicon.png"
+                  className="flex-1 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-xs focus:outline-none focus:border-orange-500"
+                />
+                <label className="px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer shrink-0">
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>{faviconUploading ? '...' : 'Upload'}</span>
+                  <input
+                    type="file"
+                    accept="image/*,.ico,.svg"
+                    onChange={handleUploadFavicon}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              {/* Presets */}
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setCustomFaviconUrl('/favicon.svg')}
+                  className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] text-zinc-300 font-mono"
+                >
+                  Flame Vector (Default)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCustomFaviconUrl('/favicon-48x48.png')}
+                  className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] text-zinc-300 font-mono"
+                >
+                  48px Google Raster
+                </button>
+              </div>
+            </div>
+
+            {/* Navbar & Footer Brand Logo Control */}
+            <div className="p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-mono uppercase text-zinc-400">
+                  Navbar &amp; Footer Brand Logo
+                </label>
+                <div className="w-6 h-6 rounded-lg bg-[#09090b] border border-orange-500/40 p-0.5 flex items-center justify-center">
+                  <img src={customBrandLogoUrl || '/favicon.svg'} alt="Logo Preview" className="w-full h-full object-contain" />
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={customBrandLogoUrl}
+                  onChange={(e) => setCustomBrandLogoUrl(e.target.value)}
+                  placeholder="/favicon.svg ya https://.../logo.png"
+                  className="flex-1 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-xs focus:outline-none focus:border-orange-500"
+                />
+                <label className="px-3 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-1.5 cursor-pointer shrink-0">
+                  <Upload className="w-3.5 h-3.5" />
+                  <span>{logoUploading ? '...' : 'Upload'}</span>
+                  <input
+                    type="file"
+                    accept="image/*,.ico,.svg"
+                    onChange={handleUploadLogo}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              <div className="flex flex-wrap gap-1.5 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setCustomBrandLogoUrl('/favicon.svg')}
+                  className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] text-zinc-300 font-mono"
+                >
+                  Use Default Logo
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCustomBrandLogoUrl(customFaviconUrl)}
+                  className="px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-[11px] text-zinc-300 font-mono"
+                >
+                  Sync With Favicon
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Live Google Search Preview (Dark Mode & Light Mode) */}
+        <div className="space-y-3">
+          <div className="text-xs font-mono uppercase tracking-wider text-zinc-400">
+            Live Google Search Preview (How it looks on Google)
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Google Dark Mode Preview */}
+            <div className="p-4 rounded-2xl bg-[#1f1f1f] border border-zinc-700/60 shadow-xl space-y-2">
+              <div className="text-[10px] font-mono text-zinc-400 uppercase flex items-center justify-between pb-1 border-b border-zinc-800">
+                <span>Google Search (Dark Mode)</span>
+                <span className="text-emerald-400">Target Result</span>
+              </div>
+              <div className="flex items-center gap-3 pt-1">
+                <div className="w-7 h-7 rounded-full bg-[#0a0a0c] border border-zinc-700/80 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                  <img src={customFaviconUrl || '/favicon-48x48.png'} alt="Favicon" className="w-5 h-5 object-contain" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs text-zinc-200 font-medium leading-none">
+                    somadigitalmarketer.com
+                  </span>
+                  <span className="text-[11px] text-zinc-400 leading-tight">
+                    https://somadigitalmarketer.com
+                  </span>
+                </div>
+              </div>
+              <a href="#" className="block text-base font-semibold text-[#99c3ff] hover:underline leading-snug">
+                {seoForm?.metaTitle || 'Soma | Digital Marketer Portfolio & CMS'}
+              </a>
+              <p className="text-xs text-[#bdc1c6] line-clamp-2 leading-relaxed">
+                {seoForm?.metaDescription ||
+                  'Personal portfolio website and exclusive admin CMS for Soma, a professional digital marketing and growth strategist.'}
+              </p>
+            </div>
+
+            {/* Google Light Mode Preview */}
+            <div className="p-4 rounded-2xl bg-white border border-zinc-200 shadow-xl space-y-2 text-zinc-900">
+              <div className="text-[10px] font-mono text-zinc-500 uppercase flex items-center justify-between pb-1 border-b border-zinc-200">
+                <span>Google Search (Light Mode)</span>
+                <span className="text-emerald-600">High Contrast</span>
+              </div>
+              <div className="flex items-center gap-3 pt-1">
+                <div className="w-7 h-7 rounded-full bg-[#0a0a0c] border border-zinc-300 flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
+                  <img src={customFaviconUrl || '/favicon-48x48.png'} alt="Favicon" className="w-5 h-5 object-contain" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-xs text-zinc-800 font-medium leading-none">
+                    somadigitalmarketer.com
+                  </span>
+                  <span className="text-[11px] text-zinc-500 leading-tight">
+                    https://somadigitalmarketer.com
+                  </span>
+                </div>
+              </div>
+              <a href="#" className="block text-base font-semibold text-[#1a0dab] hover:underline leading-snug">
+                {seoForm?.metaTitle || 'Soma | Digital Marketer Portfolio & CMS'}
+              </a>
+              <p className="text-xs text-[#4d5156] line-clamp-2 leading-relaxed">
+                {seoForm?.metaDescription ||
+                  'Personal portfolio website and exclusive admin CMS for Soma, a professional digital marketing and growth strategist.'}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Generated Favicon Formats */}
+        <div className="p-5 rounded-2xl bg-zinc-900/40 border border-zinc-800/80 space-y-3">
+          <div className="text-xs font-mono uppercase tracking-wider text-zinc-300 flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-orange-400" />
+            <span>Active Brand Favicon Assets</span>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+            <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl bg-[#09090b] border border-zinc-700 flex items-center justify-center overflow-hidden">
+                <img src="/favicon-48x48.png" alt="48x48" className="w-8 h-8 object-contain" />
+              </div>
+              <div className="text-[11px] font-mono text-zinc-300">favicon-48x48.png</div>
+              <div className="text-[9px] text-emerald-400 font-mono">Google Standard</div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl bg-[#09090b] border border-zinc-700 flex items-center justify-center overflow-hidden">
+                <img src="/favicon-192x192.png" alt="192x192" className="w-9 h-9 object-contain" />
+              </div>
+              <div className="text-[11px] font-mono text-zinc-300">favicon-192x192.png</div>
+              <div className="text-[9px] text-zinc-400 font-mono">Android &amp; PWA</div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl bg-[#09090b] border border-zinc-700 flex items-center justify-center overflow-hidden">
+                <img src="/apple-touch-icon.png" alt="180x180" className="w-9 h-9 object-contain" />
+              </div>
+              <div className="text-[11px] font-mono text-zinc-300">apple-touch-icon.png</div>
+              <div className="text-[9px] text-zinc-400 font-mono">iOS Safari</div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 flex flex-col items-center gap-2 text-center">
+              <div className="w-12 h-12 rounded-xl bg-[#09090b] border border-zinc-700 flex items-center justify-center overflow-hidden">
+                <img src="/favicon.svg" alt="SVG Vector" className="w-9 h-9 object-contain" />
+              </div>
+              <div className="text-[11px] font-mono text-zinc-300">favicon.svg</div>
+              <div className="text-[9px] text-orange-400 font-mono">Vector Master</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Why Google Search Showed Default Globe & How to Fix Immediately */}
+        <div className="p-5 rounded-2xl bg-amber-950/20 border border-amber-500/30 space-y-3">
+          <div className="flex items-center gap-2 text-amber-400 text-xs font-mono font-bold uppercase">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>Google Search par Favicon aur Title update karne ka tarika:</span>
+          </div>
+          <div className="text-xs text-zinc-300 space-y-2 leading-relaxed">
+            <p>
+              1. <strong>Purani Cache Ki Wajah:</strong> Pehle is domain par WordPress default install tha, jiski wajah se Google ne purani cache <code className="text-amber-300">"Welcome to WordPress"</code> aur generic globe icon save kar li thi.
+            </p>
+            <p>
+              2. <strong>Technical Fix Ho Chuka Hai:</strong> Ab aapki website me Google-Favicon ke mutabiq 48x48, 96x96, 192x192, 512x512, SVG, robots.txt, aur Schema.org JSON-LD structured data sab perfectly inject kar diye gaye hain.
+            </p>
+            <p>
+              3. <strong>Google Par Fauran Update Kaise Karein:</strong>{' '}
+              <a
+                href="https://search.google.com/search-console"
+                target="_blank"
+                rel="noreferrer"
+                className="text-orange-400 hover:underline font-bold"
+              >
+                Google Search Console
+              </a>{' '}
+              kholein &rarr; top search bar me <code className="text-white">https://somadigitalmarketer.com/</code> paste karein &rarr; <strong>"Request Indexing"</strong> par click karein. Google ka crawler kuch ghanton me naya favicon aur title search results me show kar dega!
+            </p>
+          </div>
         </div>
       </div>
 

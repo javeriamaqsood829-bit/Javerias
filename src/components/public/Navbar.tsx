@@ -39,8 +39,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateAdmin }) => {
           href="#home"
           className="flex items-center gap-2.5 group"
         >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center text-black font-extrabold text-lg shadow-lg shadow-orange-500/20 group-hover:scale-105 transition-transform duration-200">
-            {siteSettings.brandName ? siteSettings.brandName.charAt(0) : 'A'}
+          <div className="w-9 h-9 rounded-xl bg-[#0a0a0c] border border-orange-500/50 flex items-center justify-center overflow-hidden shadow-lg shadow-orange-500/20 group-hover:scale-105 group-hover:border-orange-500 transition-all duration-200">
+            <img
+              src={siteSettings.brandLogoUrl || siteSettings.faviconUrl || '/favicon.svg'}
+              alt={siteSettings.brandName || 'Soma Growth Logo'}
+              className="w-full h-full object-contain"
+              onError={(e) => {
+                (e.currentTarget as HTMLImageElement).src = '/favicon.svg';
+              }}
+            />
           </div>
           <div className="flex flex-col">
             <span className="font-impact uppercase text-xl tracking-wide text-white group-hover:text-[#f59e0b] transition-colors leading-tight">

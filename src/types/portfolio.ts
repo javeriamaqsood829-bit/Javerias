@@ -14,6 +14,8 @@ export interface SiteSettings {
   shortBio: string;
   cvUrl: string;
   profileImage: string;
+  faviconUrl?: string;
+  brandLogoUrl?: string;
   primaryAccent: string; // e.g. "#f97316"
   secondaryAccent: string; // e.g. "#eab308"
   backgroundColor: string; // e.g. "#080808"
@@ -41,7 +43,14 @@ export interface AboutContent {
   bioParagraph1: string;
   bioParagraph2: string;
   profileImage: string;
+  imageAlt?: string;
+  imageCaption?: string;
   approach: string;
+  approachTitle?: string;
+  philosophyBullets?: string[];
+  contactCtaText?: string;
+  contactCtaLink?: string;
+  cvButtonText?: string;
   cvUrl: string;
   stats: {
     label: string;

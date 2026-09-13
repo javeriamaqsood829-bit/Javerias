@@ -4,7 +4,14 @@ Allow: /favicon*
 Allow: /site.webmanifest
 Allow: /apple-touch-icon.png
 
+User-agent: Googlebot
+Allow: /
+
 User-agent: Googlebot-Image
 Allow: /
 Allow: /favicon*
 Allow: /apple-touch-icon.png
+
+User-agent: Google-Favicon
+Allow: /
+

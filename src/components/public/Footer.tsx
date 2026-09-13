@@ -54,8 +54,15 @@ export const Footer: React.FC<FooterProps> = ({ onNavigateAdmin }) => {
           {/* Brand Info */}
           <div className="md:col-span-5 space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#f59e0b] flex items-center justify-center text-black font-extrabold text-base">
-                {siteSettings.brandName ? siteSettings.brandName.charAt(0) : 'S'}
+              <div className="w-8 h-8 rounded-lg bg-[#0a0a0c] border border-orange-500/50 flex items-center justify-center overflow-hidden shadow-md">
+                <img
+                  src={siteSettings.brandLogoUrl || siteSettings.faviconUrl || '/favicon.svg'}
+                  alt={siteSettings.brandName || 'Soma Growth Logo'}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = '/favicon.svg';
+                  }}
+                />
               </div>
               <span className="font-impact uppercase tracking-wide text-xl text-white">
                 {siteSettings.brandName || 'SOMA'}

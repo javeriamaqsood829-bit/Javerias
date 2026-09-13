@@ -55,7 +55,7 @@ export const AboutSection: React.FC = () => {
             <div className="p-6 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 space-y-4">
               <div className="flex items-center gap-3 text-orange-400 font-heading font-bold text-lg">
                 <Lightbulb className="w-5 h-5" />
-                <span>The Growth Philosophy</span>
+                <span>{aboutContent.approachTitle || 'The Growth Philosophy'}</span>
               </div>
               <p className="text-sm sm:text-base text-zinc-300 leading-relaxed">
                 {aboutContent.approach ||
@@ -63,22 +63,20 @@ export const AboutSection: React.FC = () => {
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                <div className="flex items-start gap-2 text-sm text-zinc-300">
-                  <Check className="w-4 h-4 text-orange-400 mt-0.5 shrink-0" />
-                  <span>Dual Creative &amp; Quantitative Core</span>
-                </div>
-                <div className="flex items-start gap-2 text-sm text-zinc-300">
-                  <Check className="w-4 h-4 text-orange-400 mt-0.5 shrink-0" />
-                  <span>Unit Economics &amp; Blended CAC Focus</span>
-                </div>
-                <div className="flex items-start gap-2 text-sm text-zinc-300">
-                  <Check className="w-4 h-4 text-orange-400 mt-0.5 shrink-0" />
-                  <span>Rapid Omnichannel Experimentation</span>
-                </div>
-                <div className="flex items-start gap-2 text-sm text-zinc-300">
-                  <Check className="w-4 h-4 text-orange-400 mt-0.5 shrink-0" />
-                  <span>Long-Term Brand Equity Compounding</span>
-                </div>
+                {(aboutContent.philosophyBullets && aboutContent.philosophyBullets.length > 0
+                  ? aboutContent.philosophyBullets
+                  : [
+                      'Dual Creative & Quantitative Core',
+                      'Unit Economics & Blended CAC Focus',
+                      'Rapid Omnichannel Experimentation',
+                      'Long-Term Brand Equity Compounding',
+                    ]
+                ).map((bullet, idx) => (
+                  <div key={idx} className="flex items-start gap-2 text-sm text-zinc-300">
+                    <Check className="w-4 h-4 text-orange-400 mt-0.5 shrink-0" />
+                    <span>{bullet}</span>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -92,15 +90,15 @@ export const AboutSection: React.FC = () => {
                 className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-zinc-900 hover:bg-zinc-800 text-white border border-zinc-700 font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-orange-500/50 shadow-md"
               >
                 <Download className="w-4 h-4 text-orange-400" />
-                <span>Download Professional CV</span>
+                <span>{aboutContent.cvButtonText || 'Download Professional CV'}</span>
               </a>
 
               <a
                 id="about-contact-btn"
-                href="#contact"
+                href={aboutContent.contactCtaLink || '#contact'}
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-orange-500 hover:bg-orange-600 text-black font-semibold text-sm transition-all duration-200 hover:-translate-y-0.5"
               >
-                <span>Discuss Your Growth Targets</span>
+                <span>{aboutContent.contactCtaText || 'Discuss Your Growth Targets'}</span>
               </a>
             </div>
           </div>
@@ -128,17 +126,30 @@ export const AboutSection: React.FC = () => {
 
             {/* Profile secondary visual card */}
             <div className="rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-950 p-4">
-              <div className="aspect-[16/9] rounded-xl overflow-hidden relative">
+              <div className="aspect-[16/9] rounded-xl overflow-hidden relative bg-zinc-900">
                 <img
-                  src={aboutContent.profileImage || siteSettings.profileImage}
-                  alt="Soma - Marketing Strategy Session"
+                  src={
+                    aboutContent.profileImage?.replace('/src/assets/', '/') ||
+                    siteSettings.profileImage?.replace('/src/assets/', '/') ||
+                    '/images/soma_about_portrait_1789197673991.jpg'
+                  }
+                  alt={aboutContent.imageAlt || 'Soma - Marketing Strategy Session'}
                   className="w-full h-full object-cover object-center filter contrast-105"
                   referrerPolicy="no-referrer"
                   loading="lazy"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.dataset.fallback) {
+                      target.dataset.fallback = 'true';
+                      target.src = '/images/soma_about_portrait_1789197673991.jpg';
+                    }
+                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent pointer-events-none" />
                 <div className="absolute bottom-3 left-4 right-4 text-xs text-zinc-300 font-mono">
-                  &bull; Analytics &amp; Creative Performance Studio &mdash; New York &amp; Global Remote
+                  {aboutContent.imageCaption || (
+                    <span>&bull; Analytics &amp; Creative Performance Studio &mdash; New York &amp; Global Remote</span>
+                  )}
                 </div>
               </div>
             </div>

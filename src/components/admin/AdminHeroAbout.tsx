@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Check, Upload, FileText, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, Check, Upload, FileText, Image as ImageIcon, Plus, Trash2 } from 'lucide-react';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { uploadMediaFile } from '../../lib/mediaUpload';
 
@@ -239,10 +239,10 @@ export const AdminHeroAbout: React.FC<AdminHeroAboutProps> = ({ mode }) => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="font-heading font-extrabold text-2xl text-white uppercase tracking-tight">
-            About Section &amp; Statistics
+            About Section &amp; Studio Customization
           </h1>
           <p className="text-xs text-zinc-400">
-            Edit your background, philosophy, CV link, and quantitative stats cards.
+            Edit your background, philosophy bullets, studio image, stats cards, and action buttons.
           </p>
         </div>
 
@@ -257,11 +257,12 @@ export const AdminHeroAbout: React.FC<AdminHeroAboutProps> = ({ mode }) => {
 
       {saved && (
         <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/50 text-emerald-400 text-xs">
-          About content updated successfully!
+          About content updated successfully and synchronized live!
         </div>
       )}
 
       <div className="p-6 sm:p-8 rounded-3xl bg-zinc-950/90 border border-zinc-800 space-y-6">
+        {/* Headings */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <div>
             <label className="block text-xs font-mono uppercase text-zinc-400 mb-1.5">
@@ -277,7 +278,7 @@ export const AdminHeroAbout: React.FC<AdminHeroAboutProps> = ({ mode }) => {
 
           <div>
             <label className="block text-xs font-mono uppercase text-zinc-400 mb-1.5">
-              Subheading / Pitch
+              Subheading / Value Proposition
             </label>
             <input
               type="text"
@@ -288,6 +289,7 @@ export const AdminHeroAbout: React.FC<AdminHeroAboutProps> = ({ mode }) => {
           </div>
         </div>
 
+        {/* Bio Paragraphs */}
         <div>
           <label className="block text-xs font-mono uppercase text-zinc-400 mb-1.5">
             Primary Bio Paragraph
@@ -312,76 +314,311 @@ export const AdminHeroAbout: React.FC<AdminHeroAboutProps> = ({ mode }) => {
           />
         </div>
 
-        <div>
-          <label className="block text-xs font-mono uppercase text-zinc-400 mb-1.5">
-            Growth Philosophy Statement
-          </label>
-          <textarea
-            rows={2}
-            value={aboutForm.approach}
-            onChange={(e) => setAboutForm({ ...aboutForm, approach: e.target.value })}
-            className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-sm focus:outline-none focus:border-orange-500 resize-none"
-          />
+        {/* Studio / Secondary Visual Image & Caption */}
+        <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-4">
+          <div className="flex items-center gap-2 text-sm font-semibold text-white">
+            <ImageIcon className="w-4 h-4 text-orange-400" />
+            <span>About Section Visual &amp; Studio Photo</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="md:col-span-2 space-y-3">
+              <div>
+                <label className="block text-xs font-mono uppercase text-zinc-400 mb-1">
+                  Image URL or Path
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={aboutForm.profileImage || ''}
+                    onChange={(e) => setAboutForm({ ...aboutForm, profileImage: e.target.value })}
+                    placeholder="/images/soma_about_portrait_1789197673991.jpg"
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-sm focus:outline-none focus:border-orange-500"
+                  />
+                  <label className="px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold flex items-center gap-2 cursor-pointer shrink-0">
+                    <Upload className="w-4 h-4" />
+                    <span>{uploading ? 'Uploading...' : 'Upload Image'}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, 'about')}
+                      className="hidden"
+                    />
+                  </label>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-mono uppercase text-zinc-400 mb-1">
+                    Image Caption
+                  </label>
+                  <input
+                    type="text"
+                    value={aboutForm.imageCaption || ''}
+                    onChange={(e) => setAboutForm({ ...aboutForm, imageCaption: e.target.value })}
+                    placeholder="• Analytics & Creative Performance Studio — New York & Global Remote"
+                    className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-xs focus:outline-none focus:border-orange-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-mono uppercase text-zinc-400 mb-1">
+                    Image Alt Description
+                  </label>
+                  <input
+                    type="text"
+                    value={aboutForm.imageAlt || ''}
+                    onChange={(e) => setAboutForm({ ...aboutForm, imageAlt: e.target.value })}
+                    placeholder="Soma – Marketing Strategy Session"
+                    className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-xs focus:outline-none focus:border-orange-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Live thumbnail preview */}
+            <div className="rounded-xl overflow-hidden border border-zinc-800 bg-zinc-950 p-2 flex flex-col items-center justify-center min-h-[120px]">
+              <img
+                src={
+                  aboutForm.profileImage?.replace('/src/assets/', '/') ||
+                  '/images/soma_about_portrait_1789197673991.jpg'
+                }
+                alt="About section preview"
+                className="w-full h-24 object-cover rounded-lg"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src = '/images/soma_about_portrait_1789197673991.jpg';
+                }}
+              />
+              <span className="text-[10px] text-zinc-400 mt-1 font-mono">Live Card Preview</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Philosophy & Bullets */}
+        <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-mono uppercase text-zinc-400 mb-1.5">
+                Philosophy Card Title
+              </label>
+              <input
+                type="text"
+                value={aboutForm.approachTitle || 'The Growth Philosophy'}
+                onChange={(e) => setAboutForm({ ...aboutForm, approachTitle: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-sm focus:outline-none focus:border-orange-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono uppercase text-zinc-400 mb-1.5">
+                Philosophy Statement
+              </label>
+              <input
+                type="text"
+                value={aboutForm.approach || ''}
+                onChange={(e) => setAboutForm({ ...aboutForm, approach: e.target.value })}
+                className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-sm focus:outline-none focus:border-orange-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-xs font-mono uppercase text-zinc-400">
+                Philosophy Feature Checkmarks ({aboutForm.philosophyBullets?.length || 4} Bullets)
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  const currentBullets = aboutForm.philosophyBullets || [
+                    'Dual Creative & Quantitative Core',
+                    'Unit Economics & Blended CAC Focus',
+                    'Rapid Omnichannel Experimentation',
+                    'Long-Term Brand Equity Compounding',
+                  ];
+                  setAboutForm({ ...aboutForm, philosophyBullets: [...currentBullets, 'New Growth Pillar'] });
+                }}
+                className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1 font-semibold"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Bullet</span>
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              {(aboutForm.philosophyBullets || [
+                'Dual Creative & Quantitative Core',
+                'Unit Economics & Blended CAC Focus',
+                'Rapid Omnichannel Experimentation',
+                'Long-Term Brand Equity Compounding',
+              ]).map((bullet, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <span className="text-xs font-mono text-zinc-500 w-5">#{idx + 1}</span>
+                  <input
+                    type="text"
+                    value={bullet}
+                    onChange={(e) => {
+                      const currentBullets = [...(aboutForm.philosophyBullets || [
+                        'Dual Creative & Quantitative Core',
+                        'Unit Economics & Blended CAC Focus',
+                        'Rapid Omnichannel Experimentation',
+                        'Long-Term Brand Equity Compounding',
+                      ])];
+                      currentBullets[idx] = e.target.value;
+                      setAboutForm({ ...aboutForm, philosophyBullets: currentBullets });
+                    }}
+                    className="flex-1 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-xs focus:outline-none focus:border-orange-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const currentBullets = [...(aboutForm.philosophyBullets || [
+                        'Dual Creative & Quantitative Core',
+                        'Unit Economics & Blended CAC Focus',
+                        'Rapid Omnichannel Experimentation',
+                        'Long-Term Brand Equity Compounding',
+                      ])];
+                      currentBullets.splice(idx, 1);
+                      setAboutForm({ ...aboutForm, philosophyBullets: currentBullets });
+                    }}
+                    className="p-2 text-zinc-500 hover:text-rose-400"
+                    title="Delete Bullet"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* 4 Statistics Cards */}
-        <div>
-          <label className="block text-xs font-mono uppercase text-zinc-400 mb-3">
-            Key Statistics Cards (Shown on About section)
-          </label>
+        <div className="p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800 space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-mono uppercase text-zinc-400">
+              Quantitative Statistics Cards ({aboutForm.stats?.length || 0})
+            </label>
+            <button
+              type="button"
+              onClick={() => {
+                const currentStats = aboutForm.stats || [];
+                setAboutForm({
+                  ...aboutForm,
+                  stats: [...currentStats, { label: 'Metric Name', value: '100', suffix: '+' }],
+                });
+              }}
+              className="text-xs text-orange-400 hover:text-orange-300 flex items-center gap-1 font-semibold"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              <span>Add Stat Card</span>
+            </button>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {(aboutForm.stats || []).map((st, i) => (
-              <div key={i} className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-2">
-                <div className="text-xs font-mono text-zinc-400">Stat #{i + 1}</div>
-                <input
-                  type="text"
-                  value={st.value}
-                  onChange={(e) => {
-                    const newStats = [...aboutForm.stats];
-                    newStats[i] = { ...newStats[i], value: e.target.value };
-                    setAboutForm({ ...aboutForm, stats: newStats });
-                  }}
-                  placeholder="e.g. 150"
-                  className="w-full px-3 py-1.5 rounded bg-zinc-950 border border-zinc-800 text-white font-bold text-sm"
-                />
-                <input
-                  type="text"
-                  value={st.suffix || '+'}
-                  onChange={(e) => {
-                    const newStats = [...aboutForm.stats];
-                    newStats[i] = { ...newStats[i], suffix: e.target.value };
-                    setAboutForm({ ...aboutForm, stats: newStats });
-                  }}
-                  placeholder="+"
-                  className="w-full px-3 py-1.5 rounded bg-zinc-950 border border-zinc-800 text-white text-xs font-mono"
-                />
-                <input
-                  type="text"
-                  value={st.label}
-                  onChange={(e) => {
-                    const newStats = [...aboutForm.stats];
-                    newStats[i] = { ...newStats[i], label: e.target.value };
-                    setAboutForm({ ...aboutForm, stats: newStats });
-                  }}
-                  placeholder="Label"
-                  className="w-full px-3 py-1.5 rounded bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs"
-                />
+              <div key={i} className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 space-y-2 relative group">
+                <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
+                  <span>Card #{i + 1}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newStats = [...aboutForm.stats];
+                      newStats.splice(i, 1);
+                      setAboutForm({ ...aboutForm, stats: newStats });
+                    }}
+                    className="text-zinc-500 hover:text-rose-400 text-xs"
+                    title="Delete Stat"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div>
+                  <label className="text-[10px] text-zinc-500 uppercase">Value</label>
+                  <input
+                    type="text"
+                    value={st.value}
+                    onChange={(e) => {
+                      const newStats = [...aboutForm.stats];
+                      newStats[i] = { ...newStats[i], value: e.target.value };
+                      setAboutForm({ ...aboutForm, stats: newStats });
+                    }}
+                    placeholder="e.g. 150"
+                    className="w-full px-3 py-1.5 rounded bg-zinc-950 border border-zinc-800 text-white font-bold text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-zinc-500 uppercase">Suffix (e.g. +, %)</label>
+                  <input
+                    type="text"
+                    value={st.suffix || '+'}
+                    onChange={(e) => {
+                      const newStats = [...aboutForm.stats];
+                      newStats[i] = { ...newStats[i], suffix: e.target.value };
+                      setAboutForm({ ...aboutForm, stats: newStats });
+                    }}
+                    placeholder="+"
+                    className="w-full px-3 py-1.5 rounded bg-zinc-950 border border-zinc-800 text-white text-xs font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="text-[10px] text-zinc-500 uppercase">Metric Label</label>
+                  <input
+                    type="text"
+                    value={st.label}
+                    onChange={(e) => {
+                      const newStats = [...aboutForm.stats];
+                      newStats[i] = { ...newStats[i], label: e.target.value };
+                      setAboutForm({ ...aboutForm, stats: newStats });
+                    }}
+                    placeholder="Label"
+                    className="w-full px-3 py-1.5 rounded bg-zinc-950 border border-zinc-800 text-zinc-300 text-xs"
+                  />
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div>
-          <label className="block text-xs font-mono uppercase text-zinc-400 mb-1.5">
-            Download CV URL
-          </label>
-          <input
-            type="text"
-            value={aboutForm.cvUrl || ''}
-            onChange={(e) => setAboutForm({ ...aboutForm, cvUrl: e.target.value })}
-            placeholder="https://.../resume.pdf"
-            className="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-sm focus:outline-none focus:border-orange-500"
-          />
+        {/* Buttons & CTAs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-2">
+          <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+            <label className="block text-xs font-mono uppercase text-zinc-400">
+              Download CV Button
+            </label>
+            <input
+              type="text"
+              value={aboutForm.cvButtonText || 'Download Professional CV'}
+              onChange={(e) => setAboutForm({ ...aboutForm, cvButtonText: e.target.value })}
+              placeholder="Button Label"
+              className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-xs mb-2"
+            />
+            <input
+              type="text"
+              value={aboutForm.cvUrl || ''}
+              onChange={(e) => setAboutForm({ ...aboutForm, cvUrl: e.target.value })}
+              placeholder="CV URL (https://.../cv.pdf)"
+              className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-xs"
+            />
+          </div>
+
+          <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 space-y-2">
+            <label className="block text-xs font-mono uppercase text-zinc-400">
+              Contact / Target CTA Button
+            </label>
+            <input
+              type="text"
+              value={aboutForm.contactCtaText || 'Discuss Your Growth Targets'}
+              onChange={(e) => setAboutForm({ ...aboutForm, contactCtaText: e.target.value })}
+              placeholder="Button Label"
+              className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-xs mb-2"
+            />
+            <input
+              type="text"
+              value={aboutForm.contactCtaLink || '#contact'}
+              onChange={(e) => setAboutForm({ ...aboutForm, contactCtaLink: e.target.value })}
+              placeholder="Button Link (e.g. #contact)"
+              className="w-full px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-xs"
+            />
+          </div>
         </div>
       </div>
     </form>

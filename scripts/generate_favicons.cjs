@@ -1,4 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+const fs = require('fs');
+const path = require('path');
+const sharp = require('sharp');
+const { execSync } = require('child_process');
+
+const publicDir = path.resolve(__dirname, '../public');
+
+// Master SVG Vector Artwork for SOMA: Growth Strategist & Digital Marketer
+// Engineered for optical clarity at 16x16 (Google Search) and razor-sharp luxury at 512x512
+const masterSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
     <!-- Deep Obsidian Studio Background -->
     <radialGradient id="bgGrad" cx="50%" cy="30%" r="85%">
@@ -86,3 +95,53 @@
     <circle cx="396" cy="124" r="14" fill="#ffffff" />
   </g>
 </svg>
+`;
+
+async function main() {
+  console.log('Writing public/favicon.svg...');
+  fs.writeFileSync(path.join(publicDir, 'favicon.svg'), masterSvg);
+
+  const svgBuffer = Buffer.from(masterSvg);
+
+  const pngSizes = [
+    { size: 16, name: 'temp_16.png' },
+    { size: 32, name: 'temp_32.png' },
+    { size: 48, name: 'favicon-48x48.png' },
+    { size: 96, name: 'favicon-96x96.png' },
+    { size: 144, name: 'favicon-144x144.png' },
+    { size: 180, name: 'apple-touch-icon.png' },
+    { size: 192, name: 'favicon-192x192.png' },
+    { size: 512, name: 'favicon-512x512.png' },
+    { size: 512, name: 'favicon.png' }, // Replace invalid JPEG with real 512px PNG!
+  ];
+
+  for (const item of pngSizes) {
+    const dest = path.join(publicDir, item.name);
+    await sharp(svgBuffer)
+      .resize(item.size, item.size)
+      .png({ quality: 100, compressionLevel: 9 })
+      .toFile(dest);
+    console.log(`Generated ${item.name} (${item.size}x${item.size})`);
+  }
+
+  // Generate multi-resolution favicon.ico containing 16x16, 32x32, 48x48
+  const p16 = path.join(publicDir, 'temp_16.png');
+  const p32 = path.join(publicDir, 'temp_32.png');
+  const p48 = path.join(publicDir, 'favicon-48x48.png');
+  const icoDest = path.join(publicDir, 'favicon.ico');
+
+  console.log('Generating multi-resolution favicon.ico...');
+  execSync(`convert "${p16}" "${p32}" "${p48}" "${icoDest}"`);
+  console.log('favicon.ico generated successfully!');
+
+  // Clean up temporary 16 and 32 pngs
+  fs.unlinkSync(p16);
+  fs.unlinkSync(p32);
+
+  console.log('All favicons successfully generated!');
+}
+
+main().catch(err => {
+  console.error('Error generating favicons:', err);
+  process.exit(1);
+});
